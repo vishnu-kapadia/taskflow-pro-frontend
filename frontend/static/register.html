@@ -13,26 +13,84 @@
 
 <body>
     <main>
-        <h1>Create Account</h1>
+        <h1>Create account</h1>
 
-        <form action="#" method="post" aria-describedby="register-desc" novalidate>
+        <div id="register-errors" aria-live="polite" role="alert" hidden></div>
 
-            <p id="register-desc">Sign up to start creating workspace and projects.</p>
+        <form id="register-form" action="#" method="post" novalidate>
 
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" autocomplete="name" required>
+            <fieldset>
+                <legend>Registration</legend>
 
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" required>
+                <p id="register-desc">Create an account to start using TaskFlow Pro.</p>
 
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-help">
+                <div id="name-help" class="form-hint">
+                    Your full name as you want to shown.
+                </div>
+                <div id="name-error" class="form-error" role="status" aria-live="polite"></div>
 
-            <label for="password_confirmation">Confirm password</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" required>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" required autocomplete="email"
+                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" aria-describedby="email-help">
+                <div id="email-help" class="form-hint">
+                    We'll send a confirmation email.
+                </div>
+                <div id="email-error" class="form-error" role="status" aria-live="polite"></div>
 
-            <button type="submit">Create account</button>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required autocomplete="new-password" minlength="8"
+                    aria-describedby="password-help">
+                <div id="password-help" class="form-hint">
+                    At least 8 characters.
+                </div>
+                <div id="password-error" class="form-error" role="status" aria-live="polite"></div>
+
+                <label for="password_confirmation">Confirm password</label>
+                <input type="password" name="password_confirmation" id="password_confirmation" required>
+                <div id="confirm-help" class="form-hint">
+                    Re-enter your password.
+                </div>
+                <div id="confirm-error" class="form-error" role="status" aria-live="polite"></div>
+
+                <button type="submit">Create account</button>
+            </fieldset>
         </form>
+
+        <p><a href="login.html">Already have an account? Sign in</a></p>
+
+        <script>
+            // Minimal client-side validation skeleton
+            (function () {
+                const form = document.getElementById('register-form');
+                const errors = document.getElementById('register-errors');
+
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    errors.hidden = true; errors.textContent = '';
+
+                    const name = form.name.value.trim();
+                    const email = form.email.value.trim();
+                    const password = form.password.value;
+                    const confirm = form.password_confirmation.value;
+
+                    let hasError = false;
+                    if (!name) { document.getElementById('name-error').textContent = 'Please provide your name.'; hasError = true; } else { document.getElementById('name-error').textContent = ''; }
+                    if (!email || !/.+@.+\..+/.test(email)) { document.getElementById('email-error').textContent = 'Please enter a valid email.'; hasError = true; } else { document.getElementById('email-error').textContent = ''; }
+                    if (!password || password.length < 8) { document.getElementById('password-error').textContent = 'Password must be at least 8 chars.'; hasError = true; } else { document.getElementById('password-error').textContent = ''; }
+                    if (password !== confirm) { document.getElementById('confirm-error').textContent = 'Passwords do not match.'; hasError = true; } else { document.getElementById('confirm-error').textContent = ''; }
+
+                    if (hasError) {
+                        errors.hidden = false;
+                        errors.textContent = 'Please fix the errors above.';
+                        return;
+                    }
+
+                    // TODO: call backend API: POST /api/register
+                });
+            })();
+        </script>
     </main>
 </body>
 

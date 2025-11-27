@@ -1,33 +1,77 @@
-# Form Contracts — TaskFlow Pro
+# API Form Contracts — TaskFlow Pro 
+This document specifies request/response JSON for auth endpoints used by the frontend.
 
-## Login POST /login
-```json
+## POST /api/register
+**Description**: Register new user. (Sanctum SPA flow: GET /sanctum/csrf-cookie then POST.)
+**Request (JSON)**:
+
+JSON
 {
-  "email": "string",
-  "password": "string"
+  "name": "string, required, 1..255",
+  "email": "string, required, email format, unique",
+  "password": "string, required, min:8",
+  "password_confirmation": "string, required, must match password"
 }
-
-// Expected Errors
+ 
+ 
+Success (201 Created):
+ 
 {
-  "errors": {
-    "email": ["Invalid credentials"],
-    "password": ["Incorrect password"]
-  }
+  "data": {
+    "id": 123,
+    "name": "John Doe",
+    "email": "john@example.com"
+  },
+  "message": "Registered successfully."
 }
-
-// Registration POST/register
+ 
+ 
+Validation error (422):
+ 
 {
-  "name": "string",
-  "email": "string",
-  "password": "string"
+  "message": "The given data was invalid.",
+  "errors": {
+    "email": ["The email has already been taken."],
+    "password": ["The password must be at least 8 characters."]
+  }
 }
-
-// Expected Errors
+ 
+POST /api/login
+ 
+Description: Login (Sanctum SPA: GET /sanctum/csrf-cookie then POST /api/login).
+ 
+Request (JSON):
+ 
 {
-  "errors": {
-    "email": ["Email already taken"],
-    "password": ["Password too weak"]
-  }
+  "email": "string, required, email format",
+  "password": "string, required"
 }
-
-
+ 
+ 
+Success (200 OK):
+ 
+{
+  "data": {
+    "user": {
+      "id": 123,
+      "name": "John Doe",
+      "email": "john@example.com"
+    }
+  },
+  "message": "Logged in."
+}
+ 
+ 
+Auth failure (401):
+ 
+{
+  "message": "Invalid credentials."
+}
+ 
+ 
+Validation error (422):
+ 
+{
+  "message": "The given data was invalid.",
+  "errors": { "email": ["The email field is required."] }
+}

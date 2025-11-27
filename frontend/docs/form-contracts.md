@@ -1,8 +1,11 @@
 # API Form Contracts — TaskFlow Pro 
+
 This document specifies request/response JSON for auth endpoints used by the frontend.
 
 ## POST /api/register
+
 **Description**: Register new user. (Sanctum SPA flow: GET /sanctum/csrf-cookie then POST.)
+
 **Request (JSON)**:
 
 JSON
@@ -75,3 +78,12 @@ Validation error (422):
   "message": "The given data was invalid.",
   "errors": { "email": ["The email field is required."] }
 }
+ 
+ 
+Notes:
+ 
+Frontend must call GET /sanctum/csrf-cookie before POST for cookie-based auth.
+ 
+All validation errors return 422 with { message, errors }.
+ 
+Keep frontend error rendering code ready to display errors map.

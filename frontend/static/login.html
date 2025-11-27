@@ -12,56 +12,95 @@
 </head>
 
 <body>
-    <header>
-        <h1>TaskFlow Pro - Login</h1>
+    <header class="site-header">
+        <div class="container">
+            <div class="site-brand"><a href="index.html">TaskFlow Pro</a></div>
+            <nav class="site-nav" aria-label="Primary">
+                <ul>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
-    <main>
-        <section aria-labelledby="login-title">
+    <main class="container">
+        <section aria-labelledby="login-title" class="card" id="login-section">
             <h2 id="login-title">Sign in to your account</h2>
 
-            <!-- Form level error region -->
-            <div id="login-errors" class="form-error" aria-live="polite" hidden></div>
+            <!-- Form-level error region -->
+            <div id="login_errors" class="form-error" role="alert" aria-live="polite" hidden></div>
 
             <form id="login-form" action="#" method="post" novalidate>
 
                 <fieldset>
-                    <legend>Login Credentials</legend>
+                    <legend>Login credentials</legend>
 
                     <div class="form-group">
-                        <label for="login_email">Email address</label>
-                        <input type="email" id="login_email" name="email" autocomplete="email" required
-                            aria-describedby="login_email_hint">
-                        <p id="login_email_hint" class="form-hint">Use the email you registered with.</p>
+                        <label for="login_email">Email</label>
+                        <input id="login_email" name="email" type="email" autocomplete="email" required
+                            aria-describedby="login_email_help" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+                        <div id="login_email_help" class="form-hint">Use the email you registered with.</div>
+                        <div id="login_email_error" class="form-error" role="status" aria-live="polite"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="login_password">Password</label>
-                        <input type="password" id="login_password" name="password" autocomplete="current-password"
-                            required>
+                        <input id="login_password" name="password" type="password" autocomplete="current-password"
+                            required minlength="8" aria-describedby="login_password_help">
+                        <div id="login_password_help" class="form-hint">Minimum 8 characters.</div>
+                        <div id="login_password_error" class="form-error" role="status" aria-live="polite"></div>
                     </div>
-                </fieldset>
 
-                <button type="submit" class="btn-primary">Login</button>
-
+                    <button type="submit" class="btn btn-primary">Sign in</button>
                 </fieldset>
             </form>
+
+            <p class="text-muted">Don't have an account? <a href="register.html">Create one</a>.</p>
         </section>
 
-        <p><a href="register.html">Create an account</a></p>
-
-        <!-- TODO: React mount for login page enhancements -->
+        <!-- TODO: React mount for login enhancements -->
     </main>
 
     <script>
         (function () {
-            const form = document.getElementById("login-form");
-            const errorBox = document.getElementById("login-errors");
+            const form = document.getElementById('login_form');
+            const formError = document.getElementById('login_errors');
 
-            form.addEventListener("submit", function (e) {
+            function clearFieldErrors() {
+                document.getElementById('login_email_error').textContent = '';
+                document.getElementById('login_password_error').textContent = '';
+            }
+
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
-                errorBox.hidden = false;
-                errorBox.textContent = "TODO: Implement real validation and API call.";
-                // TODO: implement fetch('/login') + CSRF via /sanctum/csrf-cookie
+                formError.hidden = true;
+                formError.textContent = '';
+                clearFieldErrors();
+
+                const email = form.email.value.trim();
+                const password = form.password.value;
+
+                let hasError = false;
+                if (!email || !/.+@.+\..+/.test(email)) {
+                    document.getElementById('login_email_error').textContent = 'Please enter a valid email.';
+                    hasError = true;
+                }
+                if (!password || password.length < 8) {
+                    document.getElementById('login_password_error').textContent = 'Password must be at least 8 characters.';
+                    hasError = true;
+                }
+
+                if (hasError) {
+                    formError.hidden = false;
+                    formError.textContent = 'Please fix the errors above.';
+                    return;
+                }
+
+                // TODO: Replace with backend call:
+                // 1) GET /sanctum/csrf-cookie
+                // 2) POST /api/login with credentials (withCredentials: true)
+                formError.hidden = false;
+                formError.textContent = 'Client-side validation passed (placeholder).';
             });
         })();
     </script>

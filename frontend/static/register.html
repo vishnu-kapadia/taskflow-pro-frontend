@@ -12,60 +12,109 @@
 </head>
 
 <body>
-    <header>
-        <h1>Create your TaskFlow Pro account</h1>
+    <header class="site-header">
+        <div class="container">
+            <div class="site-brand"><a href="index.html">TaskFlow Pro</a></div>
+            <nav class="site-nav" aria-label="Primary">
+                <ul>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
-    <main>
-        <section aria-labelledby="register-title">
-            <h2 id="register-title">Register</h2>
+    <main class="container">
+        <section aria-labelledby="register-title" class="card" id="register-section">
+            <h2 id="register-title">Create an account</h2>
 
             <!-- Form-level error region -->
-            <div id="register-errors" class="form-error" aria-live="polite" hidden></div>
+            <div id="register_errors" class="form-error" role="alert" aria-live="polite" hidden></div>
 
             <form id="register-form" action="#" method="post" novalidate>
 
                 <fieldset>
-                    <legend>Account Information</legend>
+                    <legend>Account information</legend>
 
                     <div class="form-group">
-                        <label for="register_name">Full Name</label>
-                        <input type="text" id="register_name" name="name" autocomplete="name" required>
+                        <label for="register_name">Full name</label>
+                        <input id="register_name" name="name" type="text" autocomplete="name" required>
+                        <div id="register_name_error" class="form-error" role="status" aria-live="polite"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="register_email">Email</label>
-                        <input type="email" id="register_email" name="email" autocomplete="email" required
-                            aria-describedby="register_email_hint">
-                        <p id="register_email_hint" class="form-hint">We’ll send a verification email.</p>
+                        <input id="register_email" name="email" type="email" autocomplete="email" required
+                            aria-describedby="register_email_help" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$">
+                        <div id="register_email_help" class="form-hint">We’ll send a confirmation email.</div>
+                        <div id="register_email_error" class="form-error" role="status" aria-live="polite"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="register_password">Password</label>
-                        <input type="password" id="register_password" name="password" autocomplete="new-password"
-                            required>
+                        <input id="register_password" name="password" type="password" autocomplete="new-password"
+                            required minlength="8">
+                        <div id="register_password_error" class="form-error" role="status" aria-live="polite"></div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="register_password_confirmation">Confirm password</label>
+                        <input id="register_password_confirmation" name="password_confirmation" type="password"
+                            autocomplete="new-password" required>
+                        <div id="register_password_confirmation_error" class="form-error" role="status"
+                            aria-live="polite"></div>
+                    </div>
+
                 </fieldset>
 
-                <button type="submit" class="btn-primary">Create Account</button>
+                <button type="submit" class="btn btn-primary">Create account</button>
             </form>
+
+            <p class="text-muted">Already have an account? <a href="login.html">Sign in</a>.</p>
         </section>
 
-        <!-- TODO: React mount for registration page -->
-        <p><a href="login.html">Already have an account? Sign in</a></p>
-
+        <!-- TODO: React mount for registration enhancements -->
     </main>
 
     <script>
         (function () {
-            const form = document.getElementById("register-form");
-            const errorBox = document.getElementById("register-errors");
+            const form = document.getElementById('register_form');
+            const formError = document.getElementById('register_errors');
 
-            form.addEventListener("submit", function (e) {
+            function clearErrors() {
+                ['register_name_error', 'register_email_error', 'register_password_error', 'register_password_confirmation_error'].forEach(id => {
+                    document.getElementById(id).textContent = '';
+                });
+            }
+
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
-                errorBox.hidden = false;
-                errorBox.textContent = "TODO: Implement real registration validation.";
-                // TODO: API POST /register + password rules
+                formError.hidden = true;
+                formError.textContent = '';
+                clearErrors();
+
+                const name = form.name.value.trim();
+                const email = form.email.value.trim();
+                const password = form.password.value;
+                const confirm = form.password_confirmation.value;
+
+                let hasError = false;
+                if (!name) { document.getElementById('register_name_error').textContent = 'Please provide your name.'; hasError = true; }
+                if (!email || !/.+@.+\..+/.test(email)) { document.getElementById('register_email_error').textContent = 'Please enter a valid email.'; hasError = true; }
+                if (!password || password.length < 8) { document.getElementById('register_password_error').textContent = 'Password must be at least 8 chars.'; hasError = true; }
+                if (password !== confirm) { document.getElementById('register_password_confirmation_error').textContent = 'Passwords do not match.'; hasError = true; }
+
+                if (hasError) {
+                    formError.hidden = false;
+                    formError.textContent = 'Please fix the errors above.';
+                    return;
+                }
+
+                // TODO: call backend API:
+                // 1) GET /sanctum/csrf-cookie
+                // 2) POST /api/register with { name, email, password, password_confirmation } and withCredentials
+                formError.hidden = false;
+                formError.textContent = 'Client-side validation passed (placeholder).';
             });
         })();
     </script>

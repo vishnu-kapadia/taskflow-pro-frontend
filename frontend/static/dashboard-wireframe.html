@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Vishnu Kapadia">
+    <meta name="description" content="TaskFlow Pro dashboard wireframe">
+    <meta name="keywords" content="Dashboard, Wireframe, TaskFlow Pro">
+    <title>Dashboard - TaskFlow Pro (Wireframe)</title>
+    <link rel="stylesheet" href="css/styles.css" type="text/css">
+</head>
+
+<body>
+    <header>
+        <h1>Dashboard</h1>
+        <nav>
+            <a href="#">My profile</a>
+            <a href="#">Logout</a>
+        </nav>
+    </header>
+    <main>
+        <aside aria-labelledby="Sidebar" id="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="#">Workspaces</a></li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">Notifications</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <section id="main-area" aria-labelledby="project-heading">
+            <h2 id="project-heading">Current projects</h2>
+            <!-- Placeholder for React mount -->
+            <div data-mount="taskflow-dashboard" aria-live="polite">
+                <!-- TODO: React will mount here -->
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
